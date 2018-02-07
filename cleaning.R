@@ -40,8 +40,12 @@ for(i in 1:1511){
 }
 ct<-data.frame(id,name,hisp,non.hisp,pop,zonal.hisp,zonal.almost.hisp,zonal.non.hisp)
 
-income.data<-read.csv(file="2010 Income Estimate edited.csv")
-
+income.data<-read.csv(file="2010 Income Estimate edited.csv",stringsAsFactors=FALSE)
+for(i in 2:11){
+  income.data[,i]<-as.numeric(income.data[,i])
+}
 ct<-merge(ct,income.data,by="id")
 
 write.csv(ct, file="HISP+INCOME.csv")
+
+t.test(ct$per.capita[ct$zonal.non.hisp==0 & ct$hisp>0],ct$per.capita[ct$zonal.non.hisp==1 & ct$zonal.non.hisp>0], alternative = "less")
