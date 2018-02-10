@@ -46,6 +46,20 @@ for(i in 2:11){
 }
 ct<-merge(ct,income.data,by="id")
 
-write.csv(ct, file="HISP+INCOME.csv")
-
 t.test(ct$per.capita[ct$zonal.non.hisp==0 & ct$hisp>0],ct$per.capita[ct$zonal.non.hisp==1 & ct$zonal.non.hisp>0], alternative = "less")
+
+pov<-read.csv(file="2010 Poverty Estimate.csv",stringsAsFactors=FALSE)
+
+ct<-merge(ct,pov,by="id")
+
+edu<-read.csv(file="2010 Education Estimate.csv",stringsAsFactors=FALSE)
+
+ct<-merge(ct,edu,by="id")
+
+hisp.tracts<-ct[ct$zonal.non.hisp==0 & ct$hisp>0,]
+non.hisp.tracts<-ct[ct$zonal.non.hisp==1 & ct$hisp>0,]
+
+t.test(hisp.tracts$pov/(hisp.tracts$pov+hisp.tracts$non.pov),non.hisp.tracts$pov/(non.hisp.tracts$pov+non.hisp.tracts$non.pov), alternative = "greater")
+t.test((hisp.tracts$bach.or.high.f+hisp.tracts$bach.or.high.m)/hisp.tracts$above.25.est,(non.hisp.tracts$bach.or.high.f+non.hisp.tracts$bach.or.high.m)/non.hisp.tracts$above.25.est, alternative = "less")
+
+write.csv(ct, file="2010 Comprehensive Data - Indiana.csv")
